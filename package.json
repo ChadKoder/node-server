@@ -1,6 +1,6 @@
 {
-  "name": "DashServer",
-  "description": "Dash Server",
+  "name": "NodeServer",
+  "description": "Node Server",
   "author": "Chad Keibler",
   "devDependencies": {
     "browserify": "^13.0.0",
@@ -16,15 +16,6 @@
     "supertest": "latest"
   },
   "dependencies": {
-    "angular": "^1.5.7",
-    "angular-animate": "^1.5.7",
-    "angular-aria": "^1.5.7",
-    "angular-loading-bar": "^0.9.0",
-    "angular-material": "^1.0.9",
-    "angular-messages": "^1.5.7",
-    "angular-mocks": "^1.5.7",
-    "angular-resource": "^1.5.7",
-    "angular-route": "^1.5.7",
     "express": "^4.14.0",
     "formidable": "^1.0.17",
     "fs.extra": "^1.3.2",

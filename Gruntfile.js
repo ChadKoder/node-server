@@ -27,16 +27,7 @@ module.exports = function(grunt) {
                     frameworks: ['jasmine', 'browserify'],
                     autoWatch: true,
                     files: [
-						'node_modules/requirejs/require.js', 
-						'node_modules/angular/angular.js',
-						'node_modules/angular-route/angular-route.js',
-						'node_modules/angular-animate/angular-animate.js',
-						'node_modules/angular-aria/angular-aria.js',
-						'node_modules/angular-material/angular-material.js',
-						'node_modules/angular-mocks/angular-mocks.js',
-						'node_modules/angular-loading-bar/build/loading-bar.js',
-						'www/js/functions.js',
-						'src/js/app/app.js'
+						'www/js/functions.js'
                     ],
                     browsers: [
 						'PhantomJS2'
@@ -54,43 +45,7 @@ module.exports = function(grunt) {
             }
         }
 
-	var requiredJsFiles = [
-		'node_modules/angular/angular.js',
-		'node_modules/requirejs/require.js',
-		'node_modules/angular-route/angular-route.js',
-		'node_modules/angular-animate/angular-animate.js',
-		'node_modules/angular-aria/angular-aria.js',
-        'node_modules/angular-resource/angular-resource.js',
-		'node_modules/angular-messages/angular-messages.js',
-		'node_modules/angular-material/angular-material.js',
-		'node_modules/angular-loading-bar/build/loading-bar.js'
-	],
-	concatConfig = {
-		requirements: {
-			options: {
-				sourceMap: false,
-				banner: '/*\n' + 
-				  ' * Requirements v <%=pkg.version%> (build <%=build%>)\n' +
-				  ' */\n\n'
-			},
-			dest: 'www/js/requirements.js',
-			src: requiredJsFiles,
-			nonull: true
-		}
-	},
-	jshintFiles = ['src/js/**/*.js'], 
-	uglifyConfig = {
-		requirements: {
-			options: {
-				banner: '/*\n' +
-					' * Requirements v <%=pkg.version%> (build <%=build%>)\n' +
-					' */\n\n'
-			},
-			files: {
-				'www/js/requirements.min.js': 'www/js/requirements.js'
-			}
-		}
-	};
+	var jshintFiles = ['src/js/**/*.js'];
 		
 		
 		
@@ -114,32 +69,14 @@ module.exports = function(grunt) {
 
             // Push pre-concat version to jshint first so we get accurate file names / line numbers.
             jshintFiles.push(moduledir + '/**/*.js');
-			concatConfig[module] = {
-				options: {
-					banner: bannerTemplate,
-					sourceMap: false
-				},
-				dest: concatenatedFile,
-				src: [moduledir + module + '.js', moduledir + '/**/*.js']
-			};
-			
-            uglifyConfig[module] = {
-                options: {
-                    banner: bannerTemplate
-                },
-                files: {}
-            };
+        
 
-            uglifyConfig[module].files[minified] = [concatenatedFile];
-
+           
             //push first party post-concat modules to ensure nothing went wrong with concat.
             jshintFiles.push(concatenatedFile);
 
             karmaConfig.debug.options.files.push(concatenatedFile);
         }
-
-        //Push remaining web/js files that may not have been caught.
-        jshintFiles.push('!www/js/angular-ui.js');
     })();	
 	 
 	grunt.initConfig({
@@ -152,7 +89,7 @@ module.exports = function(grunt) {
 		},
 		pkg: pkg,
 		build: build,
-		concat: concatConfig,
+		//concat: concatConfig,
 		jshint: {
 			files: {
 				src: jshintFiles
@@ -235,53 +172,10 @@ module.exports = function(grunt) {
                     }
                 }
 		},
-		uglify: uglifyConfig,
 		karma: karmaConfig,
 		sync: {
                 main: {
                     files: [
-                        {
-                            expand: true,
-                            cwd: 'node_modules/angular-material',
-                            src: ['angular-material.css', 'angular-material.min.css'],
-                            dest: './www/css/'
-                        },
-						{
-                            expand: true,
-                            cwd: 'node_modules/angular-loading-bar/build',
-                            src: ['loading-bar.css'],
-                            dest: './output/css/'
-                        },
-						{
-                            expand: true,
-                            cwd: 'node_modules/lf-ng-md-file-input/dist',
-                            src: ['lf-ng-md-file-input.css'],
-                            dest: './output/css/'
-                        },
-						{
-                            expand: true,
-                            cwd: 'src/fonts',
-                            src: ['Capture_it.ttf', 'Capture_it_2.ttf'],
-                            dest: './output/fonts/'
-                        },
-						{
-                            expand: true,
-                            cwd: 'src/css',
-                            src: ['styles.css'],
-                            dest: './output/css/'
-                        },
-                        {
-                            expand: true,
-                            cwd: 'node_modules/angular-material',
-                            src: ['angular-material.css', 'angular-material.min.css'],
-                            dest: './output/css/'
-                        },
-						{
-							expand: true,
-							cwd: 'src/',
-							src: ['index-server.html'],
-							dest: './output/'
-						},
 						{
 							expand: true,
 							cwd: 'src/',
@@ -299,24 +193,6 @@ module.exports = function(grunt) {
 							cwd: 'src/js/functions',
 							src: ['*.js'],
 							dest: './output/js/functions/'
-						},
-						{
-							expand: true,
-							cwd: 'www/js',
-							src: ['requirements.js', 'controllers.js', 'app.js'],
-							dest: './output/js/'
-						},
-						{
-							expand: true,
-							cwd: 'src/',
-							src: ['favicon.ico'],
-							dest: './output/'
-						},
-						{
-							expand: true,
-							cwd: 'src/views',
-							src: ['*.html'],
-							dest: './output/views/'
 						}
                     ]
                 }
@@ -325,7 +201,7 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-contrib-concat');
-    grunt.loadNpmTasks('grunt-contrib-uglify');
+    //grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks('grunt-contrib-less');
@@ -334,7 +210,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-clean');
 	grunt.loadNpmTasks('grunt-sync');
 	
-	grunt.registerTask('default', ['clean', 'concat', 'uglify', 'sync']);
-	grunt.registerTask('test', ['clean', 'concat', 'uglify', 'sync', 'karma']);
+	grunt.registerTask('default', ['sync']);
+	grunt.registerTask('test', ['sync', 'karma']);
 	
 };

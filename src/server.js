@@ -28,16 +28,11 @@
 	var DatabaseService = require('./js/functions/databaseService.js');
 	var ResponseHandler = require('./js/functions/responseHandler.js');
 	var Authentication = require('./js/functions/authentication.js');
-	var Router = require('./js/functions/router.js');
-	
-	
 	var authentication = new Authentication(users);
 	var responseHandler = new ResponseHandler();
 	var databaseService = new DatabaseService(MongoClient, assert, responseHandler);
 	var FileHandler = require('./js/functions/fileHandler.js');
 	var fileHandler = new FileHandler(formidable, fs, path, os, responseHandler, databaseService);
-	var router = new Router(responseHandler, Buffer, fileHandler, authentication, fs, databaseService, path, url);
-	var httpHandler = require('./js/functions/httpHandler')(router, responseHandler);
 	
 	const PORT = 8888;
 	const MINUTES = 50;
@@ -69,15 +64,13 @@
 		}
 	};
 	
-	
-	
 	/*app.get('/node/express/', function (req, res) {
 		fileName += './views/index-server.html';
 		server.renderFile(res, fileName);
 	});*/
 	
 	app.post('/files', function(req, res) {
-		var settings = databaseService.getSettings();
+	//	var settings = databaseService.getSettings();
 		var authHeader = req.headers['authorization']; 
 		if (authHeader){
 			var auth = authHeader.split(' ')[1];
@@ -110,13 +103,9 @@
 		} else {
 			responseHandler.write500InternalError(res, 'Failed to delete settings.');
 		}
-
 	});
 	
 	app.get('/settings', function (req, res) {
-		
-		
-		
 		databaseService.getSettings(function(settings){
 			console.log('SetTTINGS: ' + JSON.stringify(settings));
 			responseHandler.write200OKWithData(res, JSON.stringify(settings));
