@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Security-Policy" content="default-src 'self' https://fonts.googleapis.com/  data: gap: https://ssl.gstatic.com 'unsafe-eval';
+		style-src 'self' https://fonts.googleapis.com/ 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com/; media-src *; connect-src 'self' http://192.168.1.109:8888/">
+		<meta name="format-detection" content="telephone=no">
+		<meta name="msapplication-tap-highlight" content="no">
+		<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
+
+		<link rel="stylesheet" href="./output/css/angular-material.min.css" type="text/css">
+		<link rel="stylesheet" href="./output/css/loading-bar.css" type="text/css">
+		<link rel="stylesheet" href="./output/css/styles.css" type="text/css">
+		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+	<title>Dash Server</title>
+	</head>
+    <body ng-app="DashServerApp" style="background-color: #BDBDBD;">
+        <div ng-controller="ConfigCtrl as vm">
+            <md-content style="background-color: #BDBDBD;" flex>
+                <md-toolbar flex style="background-color: #4d4d4d;" class="md-whiteframe-z1">
+                    <div class="md-toolbar-tools" layout="row">
+                        <span flex></span>
+                        <h3>Dash Server</h3>
+                        <span flex></span>
+                    </div>
+                </md-toolbar>
+                <md-button ng-click="vm.toggleServerSettings()">{{vm.editSettingsText}} Server Settings</md-button>
+                <md-card ng-hide="vm.serverSettings" style="background-color: #9E9E9E">
+                    <label><h3>Server Configuration:</h3></label>
+                    <md-input-container>
+                        <label>IP Address</label>
+                        <input type="text" ng-model="vm.ipAddress" required md-maxlength="45">
+                            </md-input-container>
+                    <md-input-container>
+                        <label>User Name</label>
+                        <input ng-model="vm.username"/>
+                    </md-input-container>
+                    <md-input-container>
+                        <label>Password</label>
+                        <input type="password" ng-model="vm.password"/>
+                    </md-input-container>
+					<md-input-container>
+                        <label>Upload Location</label>
+                        <input type="file" ng-data-model="vm.uploadDir" />
+                    </md-input-container>
+                    
+                    <md-button class="md-raised md-primary" ng-click="vm.saveSettings()">save</md-button>
+                </md-card>
+                <br />
+            </md-content>
+        </div>
+		<script src="./output/js/requirements.js" type="text/javascript"></script>
+        <script src="./output/js/controllers.js" type="text/javascript"></script> 
+        <script src="./output/js/app.js" type="text/javascript"></script>
+    </body>
+</html>
