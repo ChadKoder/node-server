@@ -1,0 +1,1 @@
+ mongod --port 27077 --dbpath c:\MongoDB\photo-dash

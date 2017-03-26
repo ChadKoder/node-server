@@ -7,6 +7,7 @@ function ResponseHandler() {
 					res.end();
 					return;
 				} else {
+					console.log('writing 200 OK!');
 					res.writeHeader(200);
 					res.write('200 OK');
 					res.end();
@@ -14,7 +15,7 @@ function ResponseHandler() {
 				}
 		},
 		write200OKWithData: function (res, object) {
-			console.log('sending object: ' + object);
+			//console.log('sending object: ' + object);
 			res.writeHeader(200, {'Content-Type': 'application/json'});
 			res.write(object);
 			res.end();
