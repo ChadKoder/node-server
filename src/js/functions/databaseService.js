@@ -7,13 +7,7 @@ function DatabaseService(mongoClient, assert) {
 				if (!err) {
 					console.log('starting to delete settings...');
 					db.dropDatabase();
-					return true;
-					/*settings.each(function (err, setting) {
-						assert.equal(err, null);
-						if (setting != null){
-							//responseHandler.write200Success(res);
-						}
-					});*/
+					return true;					
 				} else {
 					console.log('Error while retrieving settings: ' + err);
 					return false;
@@ -30,12 +24,10 @@ function DatabaseService(mongoClient, assert) {
 						if (err){
 							console.log('ERROR: ' + err);
 							return false;
-						} else {
-							//console.log('GOT RESULTS!!! ==> TOTAL: ' + result.length);
+						} else {							
 							callback(result);
 							return true;
-						}
-						
+						}						
 					});
 				} else {
 					console.log('error while getting settings...');
@@ -68,7 +60,6 @@ function DatabaseService(mongoClient, assert) {
 			mongoClient.connect(connectionStr, function (err, db) {
 				if (!err) {
 					console.log('Connected to database...');
-					//console.log('Deleting existing settings...');
 					db.dropDatabase();
 					 					
 					db.collection('contacts').insertMany(contacts, function(err, result) {
@@ -81,8 +72,7 @@ function DatabaseService(mongoClient, assert) {
 					console.log('Could not connect to the database: ' + err);
 					callback(false);
 					return;
-				}
-				
+				}				
 			});
 		},
 		saveSettings: function (res, ipAddress, encodedCreds, uploadDir, deviceName, albumName, callback) {
@@ -110,8 +100,7 @@ function DatabaseService(mongoClient, assert) {
 					console.log('Could not connect to the database: ' + err);
 					callback(false);
 					return;
-				}
-				
+				}				
 			});
 		}
 	}
