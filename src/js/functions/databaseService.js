@@ -31,7 +31,7 @@ function DatabaseService(mongoClient, assert) {
 							console.log('ERROR: ' + err);
 							return false;
 						} else {
-							
+							//console.log('GOT RESULTS!!! ==> TOTAL: ' + result.length);
 							callback(result);
 							return true;
 						}
@@ -52,7 +52,7 @@ function DatabaseService(mongoClient, assert) {
 							console.log('ERROR: ' + err);
 							return false;
 						} else {
-							console.log('total contacts: ' + result.length);
+							console.log('GOT RESULTS!!! ==> TOTAL: ' + result.length);
 							callback(result);
 							return true;
 						}
@@ -64,24 +64,16 @@ function DatabaseService(mongoClient, assert) {
 				}
 			});
 		},
-		saveContact: function (res, contact, callback) {
+		saveContacts: function (res, contacts, callback){
 			mongoClient.connect(connectionStr, function (err, db) {
 				if (!err) {
 					console.log('Connected to database...');
 					//console.log('Deleting existing settings...');
 					db.dropDatabase();
-					
-					/*var settings = {
-						ipAddress: ipAddress,
-						creds: encodedCreds,
-						uploadDir:uploadDir,
-						deviceName: deviceName,
-						albumName: albumName
-					};*/
-					
-					db.collection('contacts').insertOne(contact, function(err, result) {
+					 					
+					db.collection('contacts').insertMany(contacts, function(err, result) {
 						assert.equal(err, null);
-						console.log('Inserted contact into photodash...');
+						console.log('Inserted contacts into photodash...');
 						callback(true);
 						return;
 					});

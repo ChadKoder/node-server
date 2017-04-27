@@ -1,5 +1,5 @@
-var qs = require('querystring');
- 	var formidable = require('formidable'),
+var qs = require('querystring'),
+ 	 formidable = require('formidable'),
 		assert = require('assert'),
 		MongoClient = require('mongodb').MongoClient,
 		os = require('os'),
@@ -14,7 +14,7 @@ var qs = require('querystring');
 		 
 		 var qs = require('querystring');
 		
-		var resumable = require('./js/resumable-node.js')('./uploads/')
+		//var resumable = require('./js/resumable-node.js')('./uploads/')
 		//imap = require('imap'),
 		//inspect = require('util').inspect;
 	
@@ -23,7 +23,7 @@ var qs = require('querystring');
 	server.renderFile = function (res, fileName){
 		fileSystem.readFile(fileName, 'binary', function(err, file){
 				if (err) {
-					
+					////console.log('error rendering file : ' + fileName + ' err: ' + err);
 					responseHandler.write500InternalError(res, err);
 					return;
 				}
@@ -47,13 +47,13 @@ var qs = require('querystring');
 	var serverAdd = 'http://localhost:' + PORT;
 
 	var deleteTempFiles = function (){
-		
+		////console.log('checking for uploads...');
 		var files = fs.readdirSync(os.tmpdir());
 		var filesToDelete = [];
-		
+		console.log('checking for uploads to delete... total files to check -->' + files.length);
 		for (var i = 0; i < files.length; i++){
 			var uploadString = files[i].substring(0, 7);
-			
+			//console.log('uploadString--> ' + uploadString);
 			if (uploadString === 'upload_'){
 				filesToDelete.push(files[i]);
 			}
@@ -145,7 +145,7 @@ END:VCARD
 		return str;
 	};
 	
-	var saveContact = function(contact){
+	var saveContactOLD = function(contact){
 		var vCardArray = [];
 		var contactFileName = contact.name.formatted.replace("/[^a-zA-Z0-9 ]/g",'');
 		contactFileName = contactFileName.replace('?', '');
@@ -203,14 +203,14 @@ END:VCARD
 		 
 		for (var i = 0; i < vCardArray.length; i++){ 
 			fs.appendFileSync(path.join(contactsPath, contactFileName + '.vcf'), '\n');
-			
+			////console.log('WRITTTTTINGGGG: ' + vCardArray[i]);
 			fs.appendFileSync(path.join(contactsPath, contactFileName + '.vcf'), vCardArray[i]);
 		}
 		 
 	};
 	
 	app.get('/notes', function (req, res){
-		
+		////console.log('getting notes...');
 		var allNotes = [];
 		
 		var notes = require("ios-gmail-notes").bind({
@@ -255,7 +255,7 @@ END:VCARD
 				allNotes.push(note);
 			}
 			
-			
+			//console.log(JSON.stringify(allNotes[2]));
 			},
 
 			error: function(error) {
@@ -337,21 +337,44 @@ app.get('./js/resumable.js', function (req, res) {
 app.post('/files', function(req, res) {
 		console.log('got http POST /files...');
 		
-		var url_parts = url.parse(req.url, true); 
+		var url_parts = url.parse(req.url, true);
+        console.log('url_parts.albumName -- ' + url_parts.query.albumName);
 		var albumName = url_parts.query.albumName;
 		var uploadDir = url_parts.query.uploadDir;
-		 
+		console.log('GOT ALBUM NAME ----------------------------------------------> ' + albumName);
+		console.log('GOT ALBUM NAME ----------------------------------------------> ' + uploadDir);
+    
 		var saveFolder = path.join(uploadDir, albumName); //USE THIS TO SAVE TO...
-			 
+			
+				
+		/*var chunks = '';
+		req.on('data', function(data){
+			chunks += data;
+		});
+		
+		req.on('end', function(){
+			//var result = qs.parse(chunks);
+			console.log('BODYVVv');
+			console.log('CHUNKY VVV');
+			console.log(chunks);
+			
+			//console.log(result);
+		});*/
+		
+		
+		
 		databaseService.getSettings(function(result) {
-			fs.mkdirs(saveFolder, function (err) { 
-				if (!err) { 
+			fs.mkdirs(saveFolder, function (err) {
+				console.log('attempting to mkdir...');
+				if (!err) {
+					console.log('no error, moving on...');
 					var authHeader = req.headers['authorization']; 
 					if (authHeader){
 						var auth = authHeader.split(' ')[1];
 						var credString = Buffer(auth, 'base64').toString();
 						var creds = credString.split(':');
-						 
+						console.log('deciphered creds');
+					
 						if (creds) {
 							var userName = creds[0];
 							var pass = creds[1];
@@ -373,7 +396,7 @@ app.post('/files', function(req, res) {
 						responseHandler.write401Unauthorized(res);
 						return;
 					}
-					 
+					////console.log("success! created dir..")
 				} else {
 					console.log('failed to make dir...');
 				}
@@ -384,7 +407,8 @@ app.post('/files', function(req, res) {
 		 
 	});
 	
-	app.delete('/settings', function (req, res) { 
+	app.delete('/settings', function (req, res) {
+		////console.log('got DELETE settings...');
 		var success = databaseService.deleteSettings();
 		if (success) {
 			responseHandler.res(res);
@@ -394,7 +418,8 @@ app.post('/files', function(req, res) {
 	});
 	
 	app.get('/settings', function (req, res) {
-		databaseService.getSettings(function(settings){ 
+		databaseService.getSettings(function(settings){
+			////console.log('SetTTINGS: ' + JSON.stringify(settings));
 			responseHandler.write200OKWithData(res, JSON.stringify(settings));
 		});
 	}); 
@@ -575,38 +600,17 @@ app.post('/files', function(req, res) {
 			if (data.length > 0){
 				var contacts = JSON.parse(data);
 				
+				console.log('******** Total Contacts received ---> ' + contacts.length);
+				
 				if (contacts){
 					
-					var vcfContacts = [];
-					
-					for (var i = 0; i < contacts.length; i++){
-						var currContact = contacts[i];
-						
-						var success = databaseService.saveContact(res, currContact,
-						function (success){
-							if (success){
-								//responseHandler.write200Success(res);
-								console.log('saved contact to database.');
-								return;
-							} else {
-								
-								responseHandler.write500InternalError(res, 'error');
-								return;
-							}
-						});
-						
-						cleanContactData(currContact);
-						
-						
-						//////console.log('PHONEN UMBERS: ' + currContact.phoneNumbers);
-						
-						/*TODO: SAVE ALL PHONE NUMBERS, NOT JUST THE FIRST! */
-						
-						
-						//fName, mName, lName, uniqueNumber, number, fileName, title, prefix){
-						
-						//TODO FIX THIS....saveContact(currContact);
-					} 
+				  databaseService.saveContacts(res, contacts, function(success){
+						if (success){
+							console.log('saved contacts successfully!!');
+						} else {
+							console.log('error occurred while saving contacts...');
+						}
+				  });					
 				}
 			}
 		});

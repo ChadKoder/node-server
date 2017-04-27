@@ -36,6 +36,10 @@ function FileHandler(formidable, fileSystem, path, os, responseHandler, database
 					console.log('error: ' + err);
 					
 				}
+				
+				
+				console.log('files[0]===> ' + files[0]);
+				
 			});
 			
 		 
